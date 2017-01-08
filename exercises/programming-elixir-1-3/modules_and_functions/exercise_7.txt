@@ -1,5 +1,5 @@
 – Convert a float to a string with two decimal digits. (Erlang)
-  Float.to_string float
+  :io.format("~.2f", [10.10])
 
 – Get the value of an operating-system environment variable. (Elixir)
   System.get_env varname
