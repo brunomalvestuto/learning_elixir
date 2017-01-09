@@ -1,5 +1,5 @@
 defmodule MyList do
-  @alphabet_letter 26
+  @alphabet 26
 
   def caesar([], _), do: []
 
@@ -8,6 +8,6 @@ defmodule MyList do
   end
 
   def caesar([head | tail ], shift) do
-    [ head + shift-26  | caesar(tail, shift) ]
+    [ head + shift-@alphabet | caesar(tail, shift) ]
   end
 end
