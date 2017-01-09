@@ -1,5 +1,4 @@
 defmodule MyList do
-  def span(from, to), do: _span(from, to, [])
-  defp _span(from, from, list), do: list
-  defp _span(from, to, list), do: _span(from, to-1, [ to | list ])
+  def span(from, to) when from > to, do: []
+  def span(from, to), do: [ from | span(from+1, to) ]
 end
