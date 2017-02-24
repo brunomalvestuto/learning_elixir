@@ -1,21 +1,38 @@
 defmodule StringsAndBinaries do
   Code.load_file("../list_and_recursion/exercise_8.exs")
 
-  import String, only: [to_atom: 1, to_integer: 1, to_float: 1]
-
   def parse_and_apply_tax(path) do
-    orders = File.stream!(path) |>
-      Stream.drop(1) |> # header
-      Stream.map(&(String.split(String.trim(&1), ","))) |>
-      Stream.map(&parse_row/1) |>
-      Enum.to_list
-
+    file = File.open!(path)
+    headers = parse_header(IO.read(file, :line))
+    orders = Enum.map(IO.stream(file, :line), &parse_row(headers, &1))
     ApplyTax.to orders, [ NC: 0.075, TX: 0.08 ]
   end
 
-  defp parse_row([id,ship_to, net_amount]) do
-    [{:id, to_integer(id)},
-     {:ship_to, to_atom(String.trim_leading(ship_to, ":"))},
-     {:net_amount, to_float(net_amount)}]
+  def parse_header(string) do
+    string |>
+    String.strip |>
+    String.split(",") |>
+    Enum.map(&String.to_atom/1)
+  end
+
+  defp parse_row(header, row) do
+    values = row |>
+    String.strip |>
+    String.split(",") |>
+    Enum.map(&convert_to/1)
+
+    Enum.zip(header, values)
+  end
+
+  defp convert_to(value) do
+    cond do
+      Regex.match?(~r{^\d+$}, value) -> String.to_integer(value)
+      Regex.match?(~r{^\d+\.\d+$}, value) -> String.to_float(value)
+      << ?: :: utf8, name :: binary>> = value -> String.to_atom(name)
+      true -> value
+    end
   end
 end
+
+
+# StringsAndBinaries.parse_and_apply_tax("order.csv")
