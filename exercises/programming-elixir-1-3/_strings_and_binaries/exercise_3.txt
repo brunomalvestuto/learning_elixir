@@ -1,0 +1,7 @@
+Try the following in iex:
+
+iex > ['cat' | 'dog' ]
+['cat', 100,111,103]
+Why does iex print ’cat’ as a string, but ’dog’ as individual numbers?”
+
+The head is the first element of a list, in the other hand the tail is a list comprised of a head and a tail. An empty array as a tail indicates the end of the list.
