@@ -1,0 +1,1 @@
+If we had used `self` directly it would return the pid of the current process when we're expecting the parent pid. The 'me' variable fix that as the function will bind the value of me the the anonymous function.
