@@ -1,0 +1,41 @@
+# The ticker process in this chapter is a central server that sends events to registered clients.
+# Reimplement this as a ring of clients. A client sends a tick to the next client in the ring. After 2 seconds, that client sends a tick to its next client.
+# When thinking about how to add clients to the ring, remember to deal with the case where a client’s receive loop times out just as you’re adding a new process. What does this say about who has to be responsible for updating the links?
+
+# Ring.start
+# [ (R, :registry, next: self) ]
+# Ring.start
+# [ (R1, next: R2), (R2, :registry, next: R1  ) ]
+
+defmodule Ring do
+  @name :ring_register
+
+  def create do
+    case :global.whereis_name(@name) do
+      :undefined ->
+        spawn(__MODULE__, :loop, [])
+        |> register_as_master_node
+
+      register_node_pid ->
+        send register_node_pid, { :register }
+    end
+  end
+
+  defp register_as_master_node(pid) do
+    :global.register_name(@name, pid )
+  end
+
+  def loop(next // self()) do
+    receive do
+      { :register } ->
+        spawn(__MODULE__, :ring, [next])
+        |> register_as_master_node
+        |> loop
+      { :tick } ->
+        IO.puts "tock in client  #{inspect self()} next to tick #{inspect next}"
+        Process.sleep 2000
+        send next, { :tick }
+        loop(next)
+    end
+  end
+end
