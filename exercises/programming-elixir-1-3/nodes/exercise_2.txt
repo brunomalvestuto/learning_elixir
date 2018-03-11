@@ -1,0 +1,3 @@
+Question: When I introduced the interval server, I said it sent a tick "about every 2 seconds." But in the receive loop, it has an explicit timeout of 2,000 ms. Why did I say "about" when it looks as if the time should be pretty accurate?
+
+Answer: The Ticker service has two responsibilities apart from sending ticks to the clients, it registers client interested in receiving clicks hence it may be registerng a client when it should be sending ticks. In addition, if the timeout is never reached, in case there are multiple clients registering in a interval less than the timeout, the sending bit would never be executed.
