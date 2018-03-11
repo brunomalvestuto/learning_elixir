@@ -2,6 +2,10 @@
 
 # Runing Elixir within docker
 
+## Books
+
+* Programing Elixir 1.6  - Dave Thomas
+* The Little Elixir & OTP Guidebook
 
 ## Useful Links
 
